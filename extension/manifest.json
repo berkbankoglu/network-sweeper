@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "Network Sweeper",
+  "version": "1.7",
+  "description": "Bulk-remove your own connections on LinkedIn. Personal-use tool; use at your own risk.",
+  "permissions": ["storage"],
+  "content_scripts": [
+    {
+      "matches": ["https://www.linkedin.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
