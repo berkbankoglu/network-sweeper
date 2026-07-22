@@ -26,6 +26,8 @@
  * 0,25-0,7 sn'ye indirildi.
  * v1.7: Oturum limiti kaldırıldı — bağlantı bulabildiği sürece devam
  * eder (AYARLAR.maksKaldirma ile tekrar sınırlanabilir).
+ * v1.8: İsimsiz (kapatılmış hesap) bağlantılar da kaldırılıyor — liste
+ * kabı içindeki düğmelerde profil linki şartı aranmıyor artık.
  */
 
 (() => {
@@ -190,6 +192,15 @@
 
   const tetikleyiciBul = () => {
     const kok = document.querySelector('main') || document.body;
+    // Güvenilir kapsam: bağlantı listesi kabı içindeki "diğer işlemler"
+    // düğmeleri. İsimsiz (kapatılmış) hesapların satırında profil linki
+    // olmadığından burada satır kontrolü YAPILMAZ — hepsi kaldırılır.
+    const liste = document.querySelector('#ConnectionsPage_ConnectionsList');
+    if (liste) {
+      for (const b of liste.querySelectorAll('button[aria-label*="diğer işlemler" i], button[aria-label*="More actions" i]')) {
+        if (gorunur(b) && !karaListe.has(b)) return b;
+      }
+    }
     for (const secici of TETIK_SECICILER) {
       for (const b of kok.querySelectorAll(secici)) {
         if (gorunur(b) && !karaListe.has(b) && baglantiSatirinda(b)) return b;
@@ -251,7 +262,7 @@
 
   const hataRaporuKopyala = async () => {
     const rapor = {
-      eklentiSurumu: '1.7',
+      eklentiSurumu: '1.8',
       zaman: new Date().toLocaleString('tr-TR'),
       buOturumKaldirilan: kaldirilan,
       toplamKaldirilan: toplamKaldirilan,
@@ -339,7 +350,7 @@
     window.removeEventListener('click', kayitDinleyici, true);
     const rapor = {
       tur: 'kayit',
-      eklentiSurumu: '1.7',
+      eklentiSurumu: '1.8',
       zaman: new Date().toLocaleString('tr-TR'),
       url: location.href,
       adimSayisi: kayitAdimlari.length,
